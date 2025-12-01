@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Denúncias Anônimas - Governo da Paraíba</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1> Sistema de Denúncias Anônimas</h1>
+            <img src="img/images.png" alt="Logo Governo da Paraíba" style="height: 50px; margin-left: 15px;">
+            <p>Governo do Estado da Paraíba</p>
+            <span class="badge-anonimo">🔒 100% Anônimo e Seguro</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('nova')">📝 Nova Denúncia</button>
+            <button class="tab-btn" onclick="switchTab('consultar')">🔍 Consultar Denúncia</button>
+            <button class="tab-btn" onclick="switchTab('estatisticas')">📊 Estatísticas</button>
+        </div>
+
+        <div id="nova" class="content active">
+            <h2 style="margin-bottom: 20px; color: var(--dark);">Registrar Nova Denúncia</h2>
+            
+            <div class="alert alert-info show">
+                <strong>ℹ️ Sua identidade está protegida!</strong> Todas as denúncias são completamente anônimas. Você receberá um número de protocolo para acompanhamento.
+            </div>
+
+            <form id="formDenuncia">
+                <div class="form-group">
+                    <label for="categoria">Categoria da Denúncia *</label>
+                    <select id="categoria" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="corrupcao">Corrupção</option>
+                        <option value="desvio">Desvio de Recursos</option>
+                        <option value="nepotismo">Nepotismo</option>
+                        <option value="abuso">Abuso de Poder</option>
+                        <option value="fraude">Fraude em Licitação</option>
+                        <option value="servicos">Má Prestação de Serviços</option>
+                        <option value="infraestrutura">Problemas de Infraestrutura</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="orgao">Órgão/Secretaria Envolvido</label>
+                    <input type="text" id="orgao" placeholder="Ex: Secretaria de Saúde">
+                </div>
+
+                <div class="form-group">
+                    <label for="local">Local do Ocorrido</label>
+                    <input type="text" id="local" placeholder="Ex: João Pessoa, Bairro Centro">
+                </div>
+
+                <div class="form-group">
+                    <label for="descricao">Descrição Detalhada da Denúncia *</label>
+                    <textarea id="descricao" required placeholder="Descreva os fatos de forma clara e detalhada. Inclua datas, nomes (se possível), valores e qualquer informação relevante."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Anexos (Opcional)</label>
+                    <div class="file-upload" onclick="document.getElementById('arquivos').click()">
+                        <input type="file" id="arquivos" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <p>📎 Clique para adicionar documentos, fotos ou evidências</p>
+                        <small style="color: var(--gray);">Formatos aceitos: PDF, JPG, PNG, DOC</small>
+                    </div>
+                    <div id="fileList" style="margin-top: 10px; color: var(--gray);"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contato">Forma de Contato Anônima (Opcional)</label>
+                    <input type="text" id="contato" placeholder="Ex: Email criptografado, telefone sem identificação">
+                    <small style="color: var(--gray); display: block; margin-top: 5px;">
+                        * Opcional. Use apenas se desejar receber atualizações de forma anônima.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">🚀 Enviar Denúncia Anônima</button>
+            </form>
+
+            <div id="successAlert" class="alert alert-success">
+                <strong>✅ Denúncia registrada com sucesso!</strong><br>
+                Seu protocolo de acompanhamento é: <strong id="protocoloGerado"></strong><br>
+                Guarde este número para consultar o andamento da sua denúncia.
+            </div>
+        </div>
+
+        <div id="consultar" class="content">
+            <h2 style="margin-bottom: 20px; color: var(--dark);">Consultar Denúncia</h2>
+
+            <div class="form-group">
+                <label for="protocolo">Número do Protocolo</label>
+                <input type="text" id="protocolo" placeholder="Ex: DEN-2025-001">
+            </div>
+
+            <button onclick="consultarDenuncia()" class="btn btn-primary">🔍 Consultar</button>
+
+            <div id="loadingConsulta" class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px; color: var(--gray);">Consultando...</p>
+            </div>
+
+            <div id="resultadoConsulta" style="margin-top: 30px;"></div>
+        </div>
+
+        <div id="estatisticas" class="content">
+            <h2 style="margin-bottom: 30px; color: var(--dark);">Estatísticas do Sistema</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDenuncias">0</div>
+                    <div class="stat-label">Denúncias Recebidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="emAndamento">0</div>
+                    <div class="stat-label">Em Andamento</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="resolvidas">0</div>
+                    <div class="stat-label">Resolvidas</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 30px 0 20px; color: var(--dark);">Denúncias Recentes (Anônimas)</h3>
+            <div id="listaDenuncias"></div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
